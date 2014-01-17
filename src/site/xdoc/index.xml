@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
 	<properties>
-		<title>SaxPdm :: Utils</title>
+		<title>Exmo</title>
 		<author email="peter.mucha@t-systems.com">Peter Mucha</author>
 	</properties>
 
@@ -17,14 +17,13 @@
 
 		<!-- The body of the document contains a number of sections -->
 		<section name="Overview">
-			The Util-Project contains the main transformation framework of SaxPdm.<br />
 			This transformation framework is intended to easily describe mappings
 			between simple java objects (
 			<a href="http://www.oracle.com/technetwork/java/javase/documentation/spec-136004.html">Beans</a>
 			more specifically) in an intuitive and maintainable way. This should help to keep evolving mappings easily
 			 maintainable and customizable even by non-developers (to certain extend).
 			<br />
-			The transformation framework of SaxPdm is based on some very simple
+			The transformation framework is based on some very simple
 			principles. Nearly all mappings are created in a descriptive manner,
 			that is, you state what to map, not how to map things.
 
