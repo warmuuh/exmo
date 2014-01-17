@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+	<properties>
+		<title>SaxPdm :: Utils</title>
+		<author email="peter.mucha@t-systems.com">Peter Mucha</author>
+	</properties>
+
+	<head>
+		<!-- <meta ... /> -->
+		
+	</head>
+
+	<body>
+
+	<section name="How do i include external files into my xml-based mapping definition?">
+	<p>This allows for modularization of your xml files. E.g. you can externalize javascript into its own *.js file (which then supports proper editing by an IDE)<br />
+	Inclusion of files is done by using External Entity Declarations:</p> 
+	<source><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE mappings [
+	<!ENTITY utils SYSTEM  "classpath:/transformations/utils.js">
+]> 
+<mappings xmlns="http://wrm.exmo.transform">
+	<!-- your mapping definitions -->
+	
+	<script name="utils.js">&utils;</script>
+</mappings>]]></source>
+	<p>and be sure to proper escape your included file using <code>&lt;![CDATA[   content of included script   ]]&gt;</code> in your script file.</p>
+	<p>Those entities will be resolved during parsing. Currently, only the classpath protocoll is allowed and resolves against the current classpath.</p>
+	</section>
+	
+	<section name="How do i access source or target object in my script?">
+	<p>In nearly every evaluation context, a <code>source</code> and a <code>target</code> variable 
+	is registered that denote the current objects to work on. Additionally, for every script converter, the 
+	current <code>value</code> is registered, which is the value that should be converted and that will 
+	be mapped to a property in <code>target</code>.<br />
+	One exception is the initialization as well as the createTargetObject-method where no <code>target</code>-variable is registered.</p>
+	<p>Because submappers need to access values of their parents, you can access the outer scope using <code>parent</code>. To access the source-object of the outer mapper, you would use <code>parent.source</code>.</p>
+	</section>
+	
+	<section name="How do i improve debugging of my scripts?">
+	<p>Because scripts are evaluated at runtime and can not be debugged like normal code, 
+	you need to make sure to improve the error messages of your output as far as possible. 
+	Therefore it is important to name your scripts, so error messages refer to a known position.</p>
+	<source><![CDATA[
+<mappings xmlns="http://wrm.exmo.transform">
+	<!-- your mapping definitions -->
+	
+	<script name="utilities">
+		function doThis(){
+			...
+		}
+		
+		function doThat(){
+			...		
+		}
+	</script>
+</mappings>]]></source>
+<p>Additionally, a variable <code>log</code> of type <code>org.apache.commons.logging.Log</code> is registered for logging output.</p>
+	</section>
+	
+	<section name="How can i create conditional mappings?">
+	<p>Short answer: not at all.</p>
+	<p>Long answer: The mapping language does not contain any control flow elements like <code>if, while, for</code> because that
+	would allow too much logic to be put into what should be a low-level mapping definition. Put the logic into the calling side instead!</p>
+	</section>
+	
+	</body>
+
+</document>

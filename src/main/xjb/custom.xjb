@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<bindings version="2.0" xmlns="http://java.sun.com/xml/ns/jaxb"
+              xmlns:xjc= "http://java.sun.com/xml/ns/jaxb/xjc"
+              extensionBindingPrefixes="xjc namespace simplify"
+			  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+              xmlns:namespace="http://jaxb2-commons.dev.java.net/namespace-prefix"
+              xmlns:simplify="http://jaxb2-commons.dev.java.net/basic/simplify"
+              >
+    <bindings schemaLocation="../xsd/transform.xsd" node="/xs:schema">
+
+   		 <bindings>
+			<namespace:prefix name="" />
+		 </bindings>
+		
+   		 <globalBindings>
+   		 <xjc:simple />
+
+        </globalBindings>
+        
+   		
+   		 <bindings node="//xs:complexType[@name='TMapping']/xs:attribute[@name='andDo']">
+			<property name="callback"/>
+		</bindings>
+		
+		<bindings node="//xs:attribute[@name='elements']">
+			<property>
+				<baseType>
+					<javaType name="java.lang.Class" 
+					parseMethod="wrm.exmo.transform.xml.XmlUtil.loadClass"
+					printMethod="wrm.exmo.transform.xml.XmlUtil.writeClass"/>
+				</baseType>
+			</property>
+		</bindings>
+		
+		<bindings node="//xs:attribute[@name='ref']">
+			<property>
+				<baseType name="TMapper" />
+			</property>
+		</bindings>
+	</bindings>
+		
+</bindings>

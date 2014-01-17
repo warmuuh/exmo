@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+	<properties>
+		<title>SaxPdm :: Utils</title>
+		<author email="peter.mucha@t-systems.com">Peter Mucha</author>
+	</properties>
+
+	<head>
+		<!-- <meta ... /> -->
+		
+	</head>
+
+	<body>
+
+
+		<!-- The body of the document contains a number of sections -->
+		<section name="Overview">
+			The Util-Project contains the main transformation framework of SaxPdm.<br />
+			This transformation framework is intended to easily describe mappings
+			between simple java objects (
+			<a href="http://www.oracle.com/technetwork/java/javase/documentation/spec-136004.html">Beans</a>
+			more specifically) in an intuitive and maintainable way. This should help to keep evolving mappings easily
+			 maintainable and customizable even by non-developers (to certain extend).
+			<br />
+			The transformation framework of SaxPdm is based on some very simple
+			principles. Nearly all mappings are created in a descriptive manner,
+			that is, you state what to map, not how to map things.
+
+			Every mapping-task consist of three main steps.
+			<br />
+			<ul>
+				<li><b>Selection:</b>Some value will be selected in an arbitrary way.</li>
+				<li><b>Conversion:</b>This value will be converted somehow.</li>
+				<li><b>Mapping:</b>Finally, the converted value will be mapped to some target.</li>
+			</ul>
+			<subsection name="Usage">
+			
+			The Framework can be used in two ways (though more are definable via plugin):
+			<ul>
+			<li>a fluent Java-DSL (<a href="http://en.wikipedia.org/wiki/Domain-specific_language">Domain-specific Language</a>)</li>
+			<li>an XML-based language.</li>
+			</ul>
+			All Samples will be provided in both languages even if both are very similar.
+			</subsection>
+			
+			<subsection name="Example">
+			Given these two simple java beans:
+			
+
+			<source>
+class Source{
+	String name;
+	//...getters and setters...
+}
+class Target{
+	String firstName;
+	String lastName;
+	//...getters and setters...
+}
+		</source>
+	
+			For a mapping, the value of <code>name</code> would be <b>selected</b>.
+			This would then be <b>converted</b> to the first name 
+			(e.g. using the code <code>name.split(' ')[0]</code>) and 
+			finally, the value will be <b>mapped</b> onto <code>target.firstName</code>. This would also be done for the last name.<br />
+			The following snippet shows, how this mapping is expressed. More details are available under <a href="usage.html">Usage</a>.
+			
+			
+			
+				<div id="1" class="java-xml-src">
+			<source><![CDATA[
+public class NameMapper extends FluentMapper<Source, Target> {{
+	map("name").to("firstName").with(expr("value.split(' ')[0]"));
+	map("name").to("lastName").with(expr("value.split(' ')[1]"));
+}}]]></source>
+		<source ><![CDATA[
+<mappings xmlns="http://wrm.exmo.transform">
+	<mapping from="name" to="firstName">
+		<with expr="value.split(' ')[0]" />
+	</mapping>
+	
+	<mapping from="name" to="lastName">
+		<with expr="value.split(' ')[1]" />
+	</mapping>
+</mappings>]]></source>
+		</div>
+	 </subsection>
+			
+			
+			
+		</section>
+
+
+
+
+
+
+	</body>
+
+</document>

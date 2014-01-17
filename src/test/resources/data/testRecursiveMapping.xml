@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mappings id="recursiveMapper" xmlns="http://wrm.exmo.transform" >
+
+  <mapping from="a" to="a1" />
+  
+  <mapping from="child" to="child1">
+  	<with ref="recursiveMapper"/> <!--  recursion -->
+  </mapping>
+  
+</mappings>

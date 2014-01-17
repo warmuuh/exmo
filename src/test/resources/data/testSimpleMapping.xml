@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mappings xmlns="http://wrm.exmo.transform" >
+
+
+  <mapping from="a" to="a1" />
+  <mapping from="b" to="b1" andDo="target.b1x = 'X'"/>
+ 
+</mappings>

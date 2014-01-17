@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mappings xmlns="http://wrm.exmo.transform" >
+
+
+  
+
+  <!-- simple script converter -->
+  <mapping from="a" to="a1" >
+  	<with expr="target = value + '_converted'" />
+  </mapping>
+  
+  
+  <!-- instantiating a custom converter -->
+ <mapping from="date" to="date1">
+ 	<with converter="new Packages.wrm.exmo.transform.converter.DateConverter('YYYYMMdd')" />
+ </mapping>
+ 
+ 
+  
+  <!-- using a sub-mapper -->
+  <mapping from="suba" to="suba1">
+ 	<with>
+ 		<mapping from="sub_a" to="sub_a1" />
+ 	</with>
+ </mapping>
+ 
+ <!--  with referenced sub-mapper -->
+  <mapping from="subb" to="subb1">
+ 	<with ref="refMapper" />
+ </mapping>
+   
+  <submapper id="refMapper" >
+  	<mapping from="sub_a" to="sub_a1" />
+  </submapper>
+  
+  
+
+  
+  
+  
+</mappings>

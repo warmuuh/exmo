@@ -1,0 +1,5 @@
+<script>
+function includedFunction(val){
+	return val + "_fromIncluded";
+}
+</script>

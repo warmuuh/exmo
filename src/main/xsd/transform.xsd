@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://wrm.exmo.transform" 
+		xmlns="http://www.w3.org/2001/XMLSchema" 
+		xmlns:tns="http://wrm.exmo.transform"
+		elementFormDefault="qualified">
+
+    <complexType name="TMapper">
+    	<sequence>
+    		<element name="mapping" type="tns:TMapping" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    		<element name="script" type="tns:TScript" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="ID" use="optional"></attribute>
+    	<attribute name="factoryExpr" type="string"></attribute>
+    	<attribute name="andDo" type="string"></attribute>
+    </complexType>
+
+    <complexType name="TMapping">
+    	<sequence>
+    		<element name="with" type="tns:TConverter" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="from" type="string"></attribute>
+    	<attribute name="to" type="string"></attribute>
+    	<attribute name="andDo" type="string" use="optional"></attribute>
+    	<attribute name="elements" type="string" use="optional"></attribute>
+
+    	<attribute name="expr" type="string"></attribute>
+    	<attribute name="onNull" type="string"></attribute>
+    	<attribute name="collectionFactoryExpr" type="string"></attribute>
+    </complexType>
+
+    <complexType name="TConverter">
+    	<complexContent>
+    		<extension base="tns:TMapper">
+    			<attribute name="expr" type="string"></attribute>
+
+    			<attribute name="converter" type="string"></attribute>
+
+    			<attribute name="ref" type="IDREF"></attribute>
+
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+
+    <element name="mappings">
+     <complexType>
+     	<complexContent>
+     		<extension base="tns:TMapper">
+     			<sequence>
+     				<element name="submapper" type="tns:TMapper" minOccurs="0" maxOccurs="unbounded"></element>
+     			</sequence>
+     		</extension>
+     	</complexContent>
+     </complexType>
+    </element>
+
+
+    <complexType name="TScript">
+    	<simpleContent>
+    		<extension base="string">
+    			<attribute name="name" type="string" use="optional"></attribute>
+    		</extension>
+    	</simpleContent>
+    </complexType>
+
+
+
+</schema>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mappings xmlns="http://wrm.exmo.transform" >
+
+
+  
+  <!-- simple script converter -->
+  <mapping from="a" to="a1" >
+  	<with expr="target = nameToEnhancedName(value)" />
+  </mapping>
+  
+  
+  
+  <!--  pre-init value -->
+  <mapping from="b" to="b1" >
+  	<with expr="target = initValue" />
+  </mapping>
+
+
+  <script>
+    function nameToEnhancedName(val){
+        return val  + "_converted";
+    } 
+  </script>
+  
+  
+  <script>
+  var initValue = "initializedValue";
+  </script>
+  
+  
+  
+ <!-- 
+
+  
+  
+  
+  
+  <mapping from="id" to="_matnr" elements="wrm.exmo.sap.bapi.BomItem">
+    <with converter="new wrm.exmo.converters.DateConverter()" />
+    <with>
+      <mapping value="01" to="_xyz" />
+    </with>
+    
+    <with expr="nameToEnhancedName(source)" />
+    <with expr="source.name" />
+    <with converter="Converters.wrapPart()"/>
+    
+  </mapping>
+
+  
+  -->
+  
+  
+</mappings>

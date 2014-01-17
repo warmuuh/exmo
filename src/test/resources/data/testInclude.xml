@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE mappings [
+<!ENTITY includedScripts SYSTEM  "classpath:/data/included.xml">
+]> 
+<mappings xmlns="http://wrm.exmo.transform" >
+
+  &includedScripts;
+  
+  
+  
+  
+  <!-- deepmapping using a sub-mapper -->
+  <mapping from="a" to="a1">
+ 	<with expr="includedFunction(value)" />
+ </mapping>
+ 
+  
+  
+</mappings>

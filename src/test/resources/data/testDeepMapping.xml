@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mappings xmlns="http://wrm.exmo.transform" >
+
+  
+  <!-- deepmapping using a sub-mapper -->
+  <mapping from="subList" to="subList1" elements="wrm.exmo.transform.xml.XmlMapperDeepTest$SubTargetClass">
+ 	<with>
+ 		<mapping from="sub_a" to="sub_a1" />
+ 	</with>
+ </mapping>
+ 
+  
+  
+</mappings>

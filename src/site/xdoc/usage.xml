@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+	<properties>
+		<title>SaxPdm :: Utils</title>
+		<author email="peter.mucha@t-systems.com">Peter Mucha</author>
+	</properties>
+
+	<head>
+		<!-- <meta ... /> -->
+		
+	</head>
+
+	<body>
+
+		<section name="Java-based Mappings">
+		<p>The fluent java dsl is defined in the <a href="apidocs/wrm/exmo/utils/transform/RuleBuilder.html">RuleBuilder</a>
+		 interface that defines the syntax of one mapping entry as well as the 
+		 <a href="apidocs/wrm/exmo/utils/transform/RuleBuilder.html">RuleBuilderBase</a> which defines additional helper methods.</p>
+		 <p>
+		 Every new Mapper inherits from <a href="apidocs/wrm/exmo/utils/transform/FluentMapper.html">FluentMapper</a> and can define new rules 
+		 either in the constructor or in the method <code>createRules()</code> which will be called in the beginning of a mapping.
+		 </p>
+		
+		</section>
+		
+		<section name="Xml-based Mappings">
+		<p>In xml-based mapping-definitions, the possibilities are more limited. Basically, you can define all behavior in <code>&lt;script&gt;-tags</code> (currently, javascript is used as interpreted language).<br />
+		Every transformation defines its own script-context so no sharing between transformation-files is possible at runtime. Though code can be shared. More information on how to include code-files in the <a href="faq.html">FAQ</a>.
+		</p>
+		<p>
+		<span class="label label-info">Remark:</span> Every <code>&lt;script&gt;-tag</code> will be executed in the beginning of a mapping (Similar to embedded javascript in an html page). 
+		So this is where you can initialize caches etc, but because it is only executed ONCE per transformator and they are reused, it is better to add a <code>factoryExpr</code> and initialize there.
+		</p>
+		</section>
+
+
+		<!-- The body of the document contains a number of sections -->
+		<section name="Selection">
+			To select a value for the transformation, <a href="apidocs/wrm/exmo/utils/transform/selector/Selector.html">Selectors</a> are used.
+			Different Selectors already exist.
+			<ul>
+			<li><a href="apidocs/wrm/exmo/utils/transform/selector/PropertySelector.html">Property Selector</a>: This selector uses <a href="http://commons.apache.org/beanutils/">BeanUtils</a> to retrieve values from java beans. More information on how to selected (nested) properties are available <a href="http://commons.apache.org/beanutils/apidocs/org/apache/commons/beanutils/package-summary.html#standard.basic">here</a>.
+			<div id="1" class="java-xml-src">
+				<source>map("nested.property.method(argument).property").to("target.property");</source>
+				<source><![CDATA[<mapping from="nested.property.method(argument).property" to="target.property" />]]></source>
+			</div>
+			</li>
+
+			<li><a href="apidocs/wrm/exmo/utils/transform/selector/ScriptSelector.html">Script Selector</a>: This value executes the given script and returns the result as selected value.
+			<div id="2" class="java-xml-src">
+				<source>map(expr("source.parent.method()")).to("target.property");</source>
+				<source><![CDATA[<mapping expr="source.parent.method()" to="target.property" />]]></source>
+			</div>
+			</li>
+			
+			<li><a href="apidocs/wrm/exmo/utils/transform/selector/ValueSelector.html">Value Selector</a>: This selector just returns the value that was given to it. This can be used to map static attributes.
+			<div id="3" class="java-xml-src">
+				<div><source>map(value("STATIC")).to("target.property");</source>
+					You can access registered environment variables here, e.g. <code>map(value("${MyVariable}"))</code>
+				</div>
+				<div><source><![CDATA[<mapping expr="'STATIC'" to="target.property" />]]></source>
+					The <b>Script</b> selector is used for static values in xml instead of the Value Selector. Most often, simple strings are returned.
+				</div>
+			</div>
+			</li>
+			
+			<li><a href="apidocs/wrm/exmo/utils/transform/selector/DefaultSelector.html">Default Selector</a>: This selector is kind of a meta-selector which accepts two selectors. 
+			If the first selector returns null, the value of the second will be returned instead. There are convenience-methods available to create this selector:  
+			<div id="7" class="java-xml-src">
+				<source>map("property").to("target.property").onNull(value("STATIC"));</source>
+				<div><source><![CDATA[<mapping expr="property" to="target.property" onNull="'STATIC'" />]]></source>
+					Here, a ScriptSelector will be created as default-selector.
+				</div>
+			</div>
+			</li>
+			
+			
+			</ul>
+			
+			
+			These selectors are extensible and custom versions can be implemented. This can be done as follows:
+			<div id="4" class="java-xml-src"><div>
+			For the java-based usage, every mapper can define new selectors that implements the Selector-interface. It is good practice to wrap these selectors in helper-methods to fit the fluent interface, e.g.
+			<source>
+public Selector lookup(String name){
+	return new LookUpSelector(name);
+}
+
+//this allows better usage in defining the mappings:
+map(lookup("X")).to("property");</source></div>
+			<div>
+			In Xml, this will be done by defining a lookup-method that will be called
+			<source><![CDATA[
+<script>
+function lookup(name){
+//... implementation of lookup
+}
+</script>
+
+<mapping expr="lookup('X')" to="property" />]]></source>
+	</div>		
+		</div>	
+		
+		
+		</section>
+
+
+
+
+
+
+		<section name="Conversion">
+		For every mapping, simple conversion will be done by default usign the <a href="http://commons.apache.org/beanutils/api/org/apache/commons/beanutils/ConvertUtilsBean.html">ConvertUtils</a>. 
+		Everything else will be done using Implementations of <a href="apidocs/wrm/exmo/utils/transform/converter/TypeConverter.html">TypeConverters</a>. <br />
+		Some simple TypeConverters already exist:
+		<ul>
+		<li>
+		<a href="apidocs/wrm/exmo/utils/transform/converter/ScriptConverter.html">ScriptConverter</a>: executes a given script on the current value and returns the transformed value for further usage.
+		<div id="5" class="java-xml-src">
+				<source>map("property").to("target.property").with("value + '_converted'");</source>
+				<source><![CDATA[
+<mapping from="property" to="target.property">
+	<with expr="value + '_converted' />
+</mapping>]]></source>
+		</div>
+		</li>
+		</ul>
+		
+		<span class="label label-info">Remark:</span> Mappers can be chained together and will be called in the defined sequence.
+		
+		<subsection name="Submappers">
+		<p>
+		Most often, simple mapping-definitions with value-based conversion is not enough and you need to 
+		define complex sub-mappers. Every mapping-definition is itself a converter. <br />
+		That means, FluentMappers can also be used as more complex converter.
+		</p>
+			<div id="6" class="java-xml-src">
+				<source>
+map("complexProperty").to("target.property").with( new FluentMapper(){{
+	map("nested.property").to("nested.target");
+}});</source>
+	<div>Here, <code>with</code> defines a new mapper that will be used as converter.<source><![CDATA[
+<mapping from="complexProperty" to="target.property">
+	<with>
+		<mapping from="nested.property" to="nested.target" />
+	</with>
+</mapping>]]></source></div>
+		</div>
+		</subsection>
+		
+		<subsection name="Mapping of Collections">
+		<p>
+		In case you want to map a whole collection element-wise, you need to define a converter/mapper that is called element-wise. You also need to state the target element type.<br />
+		</p>
+		<div id="12" class="java-xml-src">
+			<source><![CDATA[map("collection").asElementsOfType(String.class).to("target.collection").with("value + '_converted'");]]></source>
+			<source><![CDATA[<mapping from="collection" to="target.collection" elements="java.lang.String" >
+	<with expr="value + '_converted'" />			
+</mappings>]]></source>
+		</div>
+		<p>You can change the way the initial collection is created by using a <code>collectionFactoryExpr</code> in Xml. This will be called instead. <br />
+		<span class="label label-info">Remark:</span> It can be used to achieve an <i>additive</i> behavior (i.e. add items to an existing collection instead of creating a new collection).
+		</p>
+		
+		</subsection>
+		<subsection name="Global Converters">
+		<p>You can register global converters that map from a specific type to another specific type. 
+		This can enhance the readability of your mapping rules because you do not have to repeat the declaration of these converters again and again.</p>
+		<div id="13" class="java-xml-src">
+			<source><![CDATA[registerGlobalConverter(new CalendarToDateConverter(),XMLGregorianCalendar.class, Date.class);]]></source>
+			<source><![CDATA[not supported in xml]]></source>
+		</div>
+		</subsection>
+		</section>
+
+
+
+
+		<section name="Mapping">
+		<p>The final selection of the target will also be done using <a href="http://commons.apache.org/beanutils/">BeanUtils</a>. No customization is possible here</p>
+		
+		</section>
+
+
+		<section name="Callbacks">
+		There are three kind of callbacks that can be used to customize the mapping-process even more.
+		<ul>
+		<li><b>createTargetObject</b>: This callback can intercept the default behavior of creating a new instance of the target type, e.g. for lookup of cached values.
+		<div id="8" class="java-xml-src">
+				<source><![CDATA[
+public class CustomMapper extends FluentMapper<SourceClass, TargetClass>{
+  @Override
+  protected TargetClass createTargetObject(SourceClass sourceObject, Class<? extends TargetClass> classObject) {
+  		return lookupCachedValue(sourceObject);
+  }
+}
+				]]></source>
+				<source><![CDATA[
+<mappings xmlns="http://wrm.exmo.transform" factoryExpr="lookupCachedValue(source)">
+	<!-- mapping definitions -->
+  <script>
+    function lookupCachedValue(sourceObj){
+      //... implementation
+    }
+  </script>
+</mappings>
+
+]]></source>	
+			</div>
+		</li>
+		
+		<li><b>postMappingCallback</b>: Will be called after every mapping-definition was processed. This is only available in java-interface.
+		<div id="9" class="java-xml-src">
+			<source><![CDATA[
+public class CustomMapper extends FluentMapper<SourceClass, TargetClass>{
+  @Override
+  protected void postMappingCallback(SourceClass source, TargetClass target)
+  		//... do something with source and target
+  }
+}
+				]]></source>
+				<source><![CDATA[not available in xml]]></source>
+		</div>
+		</li>
+		
+		<li><b>Mapping-Rule Callback</b>: This is a callback that will be executed after successful processing of one mapping definition.
+		<div id="10" class="java-xml-src">
+			<div><source><![CDATA[map("property").to("target.property").andDo("target.id = createId()");]]></source>
+			Passing a String creates a <a href="apidocs/wrm/exmo/utils/transform/callback/ScriptCallback.html">ScriptCallback</a>. 
+			You can pass every implementation of <a href="apidocs/wrm/exmo/utils/transform/callback/RuleCallback.html">RuleCallback</a> instead.
+			</div>
+			<source><![CDATA[<mapping from="property" to="target.property" andDo="target.id = createId()" />]]></source>
+		</div>
+		
+		</li>
+		</ul>
+		
+		
+		</section>
+
+
+		
+		<section name="Scripting">
+			<p>Javascript is used as internal scripting language. It is used in both java- and xml-mappings to evaluate selectors or convert values.
+			During the evaluation of script, there are some global objects registered:
+				<ul>
+					<li><b>log: </b>A log that can be used to output debug, info, error, warning or trace messages.</li>
+					<li><b>$: </b>An object that enables access to <b>environment variables</b>, e.g.:  <code>$["MyVariable"]</code>.</li>
+					<li><b>source/target: </b> The current source or target object. (depending on the context, <code>source</code> or <code>target</code> may not be available, e.g. there is no <code>target</code> available in the factoryExpr-exrpession)</li>
+					<li><b>parent: </b> This object is available in sub-mappers and enables access to the parent-context, e.g. to hand over variables betwees submappers or access the parent-target-object with <code>parent.target</code>.</li>
+				</ul>
+			</p>
+		</section>
+
+	</body>
+
+</document>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="utils" xmlns="http://maven.apache.org/DECORATION/1.3.0" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
+
+  
+  <publishDate position="none"/> 
+  <version position="none"/>
+  
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.3.0</version>
+  </skin>
+  <custom>
+    <fluidoSkin>
+      <topBarEnabled>true</topBarEnabled>
+      <sideBarEnabled>true</sideBarEnabled>
+      <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+    </fluidoSkin>
+  </custom>
+  
+  <body>
+  <head>
+ <script type="text/javascript"><![CDATA[
+		$(document).ready(function(){
+						
+			$(".java-xml-src").wrap("<div class='tabbable tabs-left' />")
+			$(".java-xml-src").before(function(){
+				var id = $(this).attr('id');
+				return "<ul class='nav nav-tabs'>" +
+				"<li class='active'><a data-toggle='tab' href='#java-"+id+"'>Java</a></li>"+
+				"<li><a data-toggle='tab' href='#xml-"+id+"'>XML</a></li></ul>"
+			})
+			
+			$(".java-xml-src").addClass("tab-content")
+			$(".java-xml-src > div:nth-child(1)").wrap(function(){
+				var id = $(this).parent().attr("id");
+				return "<div id='java-"+id+"' class='tab-pane fade active in'>";
+			})
+			$(".java-xml-src > div:nth-child(2)").wrap(function(){
+				var id = $(this).parent().attr("id");
+				return "<div id='xml-"+id+"' class='tab-pane fade'>";
+			})
+			
+			
+		});
+  ]]></script>
+  <style type="text/css">
+  #banner {display:none}
+  #breadcrumbs {display:none}
+  </style>
+  </head>
+
+    <links>
+      <item name="T-Systems" href="http://www.t-systems.de/" />
+    </links>
+
+    <menu name="Utils">
+      <item name="Introduction" href="index.html"/>
+      <item name="Usage" href="usage.html"/>
+      <item name="FAQ" href="faq.html"/>
+<!--       <item name="Release Notes" href="release-notes.html" /> -->
+<!--       <item name="General Information" href="about.html"/> -->
+    </menu>
+
+    <menu name="Parent">
+	  <item name="Parent" href="../staging/index.html"/>
+	</menu>
+	
+<!--     <menu ref="parent"/> Erzeugt Link zum Parent-Modul -->
+    <menu ref="modules"/>
+    
+    <menu ref="reports" />
+    
+    <footer> </footer>
+  </body>
+  
+</project>
